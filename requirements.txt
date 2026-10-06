@@ -3,3 +3,5 @@
 #
 # El proyecto utiliza únicamente la biblioteca estándar de Python.
 # Tkinter viene incluido normalmente con Python y se utiliza para la interfaz gráfica.
+
+pip install -r requirements.txt
