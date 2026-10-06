@@ -1,5 +1,3 @@
-//paraderos
-//De Terminal a usme
 
 var estacionesGlobal = [];
 estacionesGlobal['1'] = {

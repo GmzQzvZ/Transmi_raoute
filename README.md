@@ -1,90 +1,127 @@
 # 🚍 TransMi Route
 
-Sistema inteligente desarrollado en Python para encontrar rutas entre estaciones del sistema TransMilenio mediante **representación del conocimiento, grafos, reglas de decisión y búsqueda en amplitud (BFS)**.
+Sistema inteligente desarrollado en Python para encontrar y evaluar rutas entre estaciones del sistema TransMilenio mediante **representación del conocimiento, grafos, reglas de decisión, búsqueda BFS y aprendizaje supervisado mediante árboles de decisión**.
 
 ## 📌 Descripción
 
-TransMi Route permite ingresar una estación de origen y una estación de destino para encontrar un recorrido dentro de la red modelada.
+**TransMi Route** representa la red troncal de TransMilenio como un grafo.
 
-El sistema:
+El sistema permite:
 
-- Representa las estaciones como nodos de un grafo.
-- Representa las conexiones entre estaciones como aristas dirigidas.
-- Utiliza **BFS (Breadth-First Search)** para buscar recorridos.
-- Reconoce estaciones mediante ID, nombre y algunos alias validados.
-- Identifica los servicios utilizados durante el recorrido.
-- Detecta transbordos entre servicios.
-- Calcula métricas de la ruta.
-- Aplica una política configurable de selección.
-- Presenta los resultados mediante una interfaz gráfica desarrollada con **Tkinter**.
+* Representar las estaciones como nodos.
+* Representar las conexiones entre estaciones como aristas dirigidas.
+* Utilizar **BFS (Breadth-First Search)** para encontrar recorridos.
+* Identificar los servicios utilizados.
+* Detectar transbordos.
+* Calcular métricas de cada recorrido.
+* Aplicar reglas para seleccionar una ruta.
+* Generar un conjunto de datos para aprendizaje supervisado.
+* Entrenar un **árbol de decisión**.
+* Evaluar el modelo mediante métricas de clasificación.
+* Presentar resultados mediante una interfaz gráfica desarrollada con Tkinter.
 
-> **Nota:** la política de selección es una decisión académica configurable. No representa una definición universal de la "mejor ruta".
+> **Nota:** la definición de "mejor ruta" utilizada por el proyecto corresponde a una política académica configurable. No representa una definición universal de la mejor ruta de TransMilenio.
 
-## 🎯 Objetivo
+---
 
-Desarrollar un sistema inteligente en Python que represente la red de estaciones del componente troncal de TransMilenio como un grafo, utilice búsqueda en amplitud (BFS) para encontrar recorridos entre dos estaciones y aplique criterios configurables para evaluar y presentar los resultados.
+# 🎯 Objetivos
 
-## 🧠 Conceptos utilizados
+## Objetivo general
 
-### Representación del conocimiento
-La información del sistema se organiza mediante estaciones, rutas, direcciones, servicios y conexiones.
+Desarrollar un sistema inteligente en Python capaz de representar la red troncal de TransMilenio como un grafo, encontrar recorridos mediante BFS, evaluar las alternativas mediante reglas y utilizar aprendizaje supervisado para clasificar recorridos.
 
-### Grafo
-- **Nodo:** estación física.
-- **Arista:** conexión dirigida entre dos estaciones consecutivas.
-- **Metadatos:** información relacionada con el servicio y el recorrido.
+## Objetivos específicos
 
-### Búsqueda BFS
-BFS explora el grafo por niveles hasta encontrar el destino y posteriormente reconstruye el recorrido.
+1. Construir una representación de la red de TransMilenio mediante grafos.
+2. Implementar búsqueda BFS para encontrar recorridos.
+3. Identificar servicios y transbordos.
+4. Evaluar las características de los recorridos.
+5. Construir un dataset para aprendizaje supervisado.
+6. Entrenar un árbol de decisión.
+7. Evaluar el desempeño del modelo.
+8. Documentar las limitaciones y resultados del sistema.
 
-### Reglas
-La política inicial utiliza, en este orden:
+---
 
-1. Menor cantidad de transbordos.
-2. Menor cantidad de estaciones.
-3. Menor cantidad de servicios.
-
-## 🏗️ Arquitectura
+# 🧠 Arquitectura general
 
 ```text
 Datos de referencia
-        ↓
+        │
+        ▼
 Procesamiento de datos
-        ↓
+        │
+        ▼
 Rutas orientadas
-        ↓
+        │
+        ▼
 Base de conocimiento
-        ↓
+        │
+        ▼
 Construcción del grafo
-        ↓
-Búsqueda BFS
-        ↓
-Evaluación de la ruta
-        ↓
+        │
+        ▼
+       BFS
+        │
+        ▼
+Evaluación de recorridos
+        │
+        ▼
 Reglas de selección
-        ↓
-Interfaz gráfica
+        │
+        ├───────────────────────┐
+        │                       │
+        ▼                       ▼
+ Ruta recomendada       Dataset supervisado
+                                │
+                                ▼
+                       Árbol de decisión
+                                │
+                                ▼
+                           Predicción
+                                │
+                                ▼
+                         Evaluación ML
 ```
 
-## 📁 Estructura
+---
+
+# 📁 Estructura del proyecto
 
 ```text
 Transmi_raoute/
 │
 ├── data/
 │   ├── raw/
+│   │   ├── rutas_troncales_raw.json
+│   │   ├── estaciones_troncales_raw.json
+│   │   └── equivalencias_estaciones_rutas_raw.json
+│   │
 │   └── processed/
+│       ├── rutas_transmi.json
+│       ├── rutas_orientadas.json
+│       └── dataset_transmilenio_ml.csv
 │
 ├── src/
+│   │
 │   ├── algorithms/
 │   │   └── bfs.py
+│   │
 │   ├── knowledge/
 │   │   ├── base_conocimiento.py
 │   │   └── reglas.py
+│   │
 │   ├── routing/
 │   │   └── evaluador.py
+│   │
+│   ├── data_processing/
+│   │
 │   ├── utils/
-│   └── data_processing/
+│   │
+│   └── machine_learning/
+│       ├── generar_dataset_ml.py
+│       ├── validar_dataset.py
+│       └── entrenar_arbol.py
 │
 ├── tests/
 │   ├── test_bfs.py
@@ -102,215 +139,407 @@ Transmi_raoute/
 └── README.md
 ```
 
-## 📊 Datos validados
+---
 
-La versión validada del proyecto cuenta con:
+# 📊 Datos del proyecto
 
-- **90 rutas**
-- **99 direcciones**
-- **99 direcciones construidas**
-- **0 direcciones pendientes**
-- **0 errores de orientación**
-- **134 estaciones en el grafo**
-- **919 aristas dirigidas**
+La versión validada del sistema cuenta con:
 
-La cantidad de aristas coincide con las conexiones consecutivas calculadas a partir de las rutas orientadas.
+* **90 rutas**
+* **99 direcciones**
+* **99 direcciones construidas**
+* **0 direcciones pendientes**
+* **0 errores de orientación**
+* **134 estaciones**
+* **919 aristas dirigidas**
+* **33 pruebas automatizadas**
 
-## 🔎 Ejemplos
+Los datos de referencia provienen de información abierta relacionada con TransMilenio.
 
-### Portal Eldorado → Calle 76
+---
 
-```text
-Origen: Portal Eldorado
-Destino: Calle 76
+# 🚌 Representación como grafo
 
-Resultado: Ruta encontrada
-Cantidad de estaciones: 7
-```
-
-### ID 103 → ID 116
+La red se representa mediante un grafo dirigido.
 
 ```text
-Origen: 103
-Destino: 116
-
-Resultado: Ruta encontrada
-Cantidad de estaciones: 6
+Estación A
+    │
+    ▼
+Estación B
+    │
+    ▼
+Estación C
 ```
 
-### Portal del Sur → Portal del Norte
+Cada estación representa un nodo y cada conexión entre estaciones consecutivas representa una arista.
+
+Las aristas contienen información relacionada con el servicio que realiza el recorrido.
+
+---
+
+# 🔎 Algoritmo BFS
+
+El sistema utiliza **Breadth-First Search (BFS)** para explorar el grafo.
+
+De manera simplificada:
 
 ```text
-Origen: Portal del Sur
-Destino: Portal del Norte
-
-Resultado: Ruta encontrada
-Cantidad de estaciones: 5
+Origen
+  │
+  ├── Estación 1
+  │
+  ├── Estación 2
+  │
+  └── Estación 3
+          │
+          ▼
+       Destino
 ```
 
-También se probaron alias, entradas inexistentes y casos de ambigüedad.
+BFS permite encontrar un recorrido dentro de la red modelada y reconstruir las estaciones visitadas.
 
-## 🚌 Servicios y transbordos
+---
 
-El sistema diferencia la estación física del servicio que circula por ella.
+# 📏 Evaluación de rutas
 
-Cuando el servicio cambia durante el recorrido, se registra un **transbordo**:
+Los recorridos se evalúan mediante características obtenidas directamente de la red:
+
+* Cantidad de estaciones.
+* Cantidad de tramos.
+* Cantidad de servicios.
+* Cantidad de transbordos.
+
+La política inicial utiliza:
+
+1. Menor cantidad de transbordos.
+2. Menor cantidad de estaciones.
+3. Menor cantidad de servicios.
+
+La política es configurable y se encuentra relacionada con las reglas del sistema.
+
+---
+
+# 🤖 Machine Learning
+
+Como parte de la actividad de aprendizaje supervisado, se construyó un dataset utilizando recorridos generados sobre la red.
+
+El flujo es:
 
 ```text
-Servicio A
-    ↓
-🚉 Estación de transbordo
-    ↓
-Servicio B
+Rutas orientadas
+       │
+       ▼
+Construcción del grafo
+       │
+       ▼
+Generación de recorridos
+       │
+       ▼
+Extracción de características
+       │
+       ▼
+Etiquetado
+       │
+       ▼
+dataset_transmilenio_ml.csv
+       │
+       ▼
+Árbol de decisión
 ```
 
-## 🖥️ Interfaz gráfica
+## Características utilizadas
 
-La interfaz fue desarrollada con **Tkinter** y permite:
+El modelo utiliza:
 
-- Ingresar origen.
-- Ingresar destino.
-- Buscar una ruta.
-- Visualizar las estaciones.
-- Consultar cantidad de estaciones y tramos.
-- Consultar servicios utilizados.
-- Identificar transbordos.
-- Mostrar mensajes cuando no existe una ruta o la entrada no puede resolverse.
+```text
+cantidad_estaciones
+cantidad_servicios
+cantidad_transbordos
+```
 
-La presentación utiliza una leyenda visual para diferenciar elementos del recorrido:
+La variable objetivo es:
 
-- 🔴 Troncal
-- 🟡 Biarticulado
-- 🔵 Alimentador
-- 🟣 Portal
-- ⚪ Estación
-- 🔄 Transbordo
+```text
+clasificacion
+```
 
-## ▶️ Ejecución
+con dos clases:
 
-### Requisitos
+```text
+RECOMENDADA
+NO_RECOMENDADA
+```
 
-- Python 3.x
-- Tkinter
+Las etiquetas se generan utilizando los criterios de evaluación definidos previamente en el sistema.
 
-### Interfaz gráfica
+> Esto significa que el modelo aprende a reproducir una política de selección previamente definida. No se afirma que el árbol haya descubierto por sí mismo cuál es la mejor ruta.
 
-Desde la raíz del proyecto:
+---
 
-```bash
+# 📦 Dataset de Machine Learning
+
+El dataset contiene:
+
+* **566 recorridos**
+* **179 recorridos RECOMENDADOS**
+* **387 recorridos NO_RECOMENDADOS**
+* **0 conflictos de clasificación**
+* **0 duplicados exactos**
+
+Columnas:
+
+```text
+id_recorrido
+origen
+destino
+cantidad_estaciones
+cantidad_tramos
+cantidad_servicios
+cantidad_transbordos
+clasificacion
+```
+
+---
+
+# 🧪 Validación del dataset
+
+El archivo:
+
+```text
+src/machine_learning/validar_dataset.py
+```
+
+comprueba:
+
+* Existencia del dataset.
+* Cantidad de registros.
+* Columnas.
+* Distribución de clases.
+* Duplicados.
+* Conflictos de clasificación.
+* Estadísticas descriptivas.
+
+Resultado validado actualmente:
+
+```text
+Total registros: 566
+
+RECOMENDADA: 179
+NO_RECOMENDADA: 387
+
+Duplicados exactos: 0
+
+Casos donde las mismas características
+tienen clases diferentes: 0
+```
+
+---
+
+# 🌳 Árbol de decisión
+
+El modelo utilizado es:
+
+```python
+DecisionTreeClassifier(
+    criterion="entropy",
+    max_depth=4,
+    random_state=42
+)
+```
+
+El dataset se divide en:
+
+```text
+80 % entrenamiento
+20 % prueba
+```
+
+utilizando `random_state=42` y división estratificada.
+
+El modelo permite analizar la relación entre las características del recorrido y su clasificación.
+
+---
+
+# 📈 Resultados del modelo
+
+El entrenamiento genera archivos dentro de:
+
+```text
+data/processed/ml_resultados/
+```
+
+Entre ellos:
+
+```text
+arbol_transmi_route.joblib
+arbol_decision.png
+matriz_confusion.png
+importancia_caracteristicas.png
+importancia_caracteristicas.csv
+predicciones_prueba.csv
+```
+
+Estos archivos permiten analizar:
+
+* El árbol entrenado.
+* La matriz de confusión.
+* La importancia de las características.
+* Las predicciones realizadas sobre los datos de prueba.
+
+---
+
+# 🖥️ Interfaz gráfica
+
+La interfaz utiliza **Tkinter**.
+
+Permite:
+
+* Ingresar origen.
+* Ingresar destino.
+* Buscar una ruta.
+* Visualizar estaciones.
+* Consultar cantidad de estaciones.
+* Consultar cantidad de tramos.
+* Consultar servicios.
+* Identificar transbordos.
+* Informar cuando no existe una ruta.
+
+---
+
+# ▶️ Ejecución del proyecto
+
+Desde la raíz:
+
+```text
+C:\Users\Usuario\Desktop\python\Transmi_raoute
+```
+
+## Interfaz gráfica
+
+```bat
 python -m ui.app
 ```
 
-### Versión de consola
+## Aplicación de consola
 
-```bash
+```bat
 python main.py
 ```
 
-## 🧪 Pruebas
+---
 
-El proyecto cuenta con pruebas para:
+# 🤖 Ejecución de Machine Learning
 
-- Construcción del grafo.
-- Búsqueda BFS.
-- Evaluación de rutas.
-- Reglas de selección.
-- Integración.
-- Entrada principal.
+## 1. Generar dataset
 
-Estado validado:
-
-## 💻 text
-33 pruebas 
-OK ✔️
+```bat
+python src\machine_learning\generar_dataset_ml.py
 ```
 
-## 🛡️ Manejo de errores
+## 2. Validar dataset
 
-El sistema contempla:
+```bat
+python src\machine_learning\validar_dataset.py
+```
+
+## 3. Entrenar árbol
+
+```bat
+python src\machine_learning\entrenar_arbol.py
+```
+
+---
+
+# 🧪 Pruebas automatizadas
+
+Para ejecutar todas las pruebas:
+
+```bat
+python -m unittest discover -s tests -p "test_*.py"
+```
+
+Resultado esperado:
 
 ```text
-origen_no_existe
-destino_no_existe
-origen_ambiguo
-destino_ambiguo
-sin_ruta
+33 pruebas
+OK
 ```
 
-Cuando existe ambigüedad, el sistema informa el estado correspondiente en lugar de seleccionar arbitrariamente una estación.
+---
 
-## 📦 Datos procesados
-
-Los principales archivos utilizados son:
-
-```text
-data/processed/rutas_transmi.json
-data/processed/rutas_orientadas.json
-```
-
-## 🔗 Fuentes de información
-
-Los datos de referencia provienen de información abierta publicada por **TRANSMILENIO S.A.**, incluyendo información relacionada con rutas troncales, estaciones troncales, trazados y equivalencias de estaciones.
-
-## ⚠️ Limitaciones
+# ⚠️ Limitaciones
 
 Actualmente el proyecto:
 
-- Trabaja con datos procesados localmente.
-- No utiliza tráfico en tiempo real.
-- No calcula tiempos reales de llegada.
-- No considera congestión en tiempo real.
-- No incorpora todavía criterios de accesibilidad.
-- Utiliza una política de selección configurable definida para el proyecto.
+* Utiliza datos procesados localmente.
+* No utiliza tráfico en tiempo real.
+* No calcula tiempos reales de llegada.
+* No incorpora congestión en tiempo real.
+* No incorpora todavía criterios avanzados de accesibilidad.
+* El dataset de Machine Learning se deriva de la política de evaluación existente.
+* El modelo no representa una predicción de tiempo real del sistema TransMilenio.
 
-## 🚀 Posibles mejoras
+---
 
-- Integración de información en tiempo real.
-- Tiempos estimados de viaje.
-- Visualización sobre un mapa.
-- Información de horarios.
-- Criterios de accesibilidad.
-- Mayor detalle de los tipos de servicio.
-- Comparación de recorridos.
+# 🚀 Posibles mejoras
 
-## 🛠️ Tecnologías
+Como trabajo futuro se plantea:
 
-- Python
-- Tkinter
-- JSON
-- Git / GitHub
-- Breadth-First Search (BFS)
-- Grafos
-- `unittest`
+* Incorporar información en tiempo real.
+* Incorporar tiempos estimados de viaje.
+* Incorporar congestión.
+* Utilizar información de horarios.
+* Incorporar accesibilidad.
+* Comparar diferentes algoritmos de Machine Learning.
+* Comparar árbol de decisión con otros clasificadores.
+* Visualizar las rutas sobre un mapa.
+* Incorporar nuevas variables al dataset cuando exista una fuente confiable.
 
-## 📚 Propósito académico
+---
 
-El proyecto aplica conceptos de **Inteligencia Artificial**, especialmente:
+# 🛠️ Tecnologías
 
-- Sistemas basados en conocimiento.
-- Representación del conocimiento.
-- Reglas.
-- Estrategias de búsqueda.
-- Grafos.
-- Algoritmos de búsqueda en Python.
+* Python
+* Tkinter
+* JSON
+* Pandas
+* Scikit-learn
+* Matplotlib
+* Joblib
+* unittest
+* Git
+* GitHub
+* Grafos
+* BFS
+* Árboles de decisión
 
-## 📄 Documentación
+---
 
-La documentación detallada se encuentra en:
+# 📚 Propósito académico
 
-**TransMi Route - Especificaciones del Proyecto**
+El proyecto integra conceptos de:
 
-Incluye problema, objetivos, fundamentación conceptual, arquitectura, algoritmo, reglas, pruebas, resultados, limitaciones y conclusiones.
+* Inteligencia Artificial.
+* Representación del conocimiento.
+* Sistemas basados en reglas.
+* Grafos.
+* Algoritmos de búsqueda.
+* Aprendizaje supervisado.
+* Árboles de decisión.
+* Evaluación de modelos.
 
-## 👥 Equipo
+---
 
-**Integrantes:**
+# 👥 Equipo
 
-- Julian David Sanchez
-- Juan Sebastian Gomez
+* Julian David Sanchez
+* Juan Sebastian Gomez
 
-## 📌 Estado
+---
 
-**Estado:** Funcional para el alcance académico definido.
+# 📌 Estado
 
-La versión validada incluye construcción del grafo, búsqueda BFS, evaluación, reglas, resolución de alias, pruebas automatizadas e interfaz gráfica.
+**Estado: funcional para el alcance académico definido.**
+
+El proyecto incluye representación de la red, construcción del grafo, búsqueda BFS, evaluación de rutas, reglas de selección, pruebas automatizadas, interfaz gráfica y un componente de aprendizaje supervisado basado en árbol de decisión.
