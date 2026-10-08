@@ -6,9 +6,9 @@ from pathlib import Path
 # CONFIGURACIÓN
 # ============================================================
 
-# El proyecto TransMi Route está un nivel por encima de
-# la carpeta machine_learning
-ROOT_DIR = Path(__file__).resolve().parent.parent / "Transmi_raoute"
+# El proyecto TransMi Route está dos niveles por encima
+# de la carpeta machine_learning
+ROOT_DIR = Path(__file__).resolve().parents[2]
 
 ARCHIVO = (
     ROOT_DIR

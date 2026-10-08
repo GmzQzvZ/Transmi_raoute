@@ -1,7 +1,6 @@
-# TransMi Route
-# Dependencias externas de Python: ninguna.
-#
-# El proyecto utiliza únicamente la biblioteca estándar de Python.
-# Tkinter viene incluido normalmente con Python y se utiliza para la interfaz gráfica.
-
-pip install -r requirements.txt
+# Dependencias del proyecto TransMi Route
+pandas>=2.0
+matplotlib>=3.8
+scikit-learn>=1.4
+numpy>=1.26
+pytest>=8.0
