@@ -24,7 +24,6 @@ ALIAS_ESTACIONES_VALIDADOS = {
     "portal eldorado": 116,
 }
 
-
 def cargar_rutas_orientadas(ruta_archivo=None):
     """Devuelve las rutas orientadas ya procesadas y validadas."""
     return cargar_json(ruta_archivo or RUTA_DATOS_ORIENTADOS)
